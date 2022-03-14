@@ -467,6 +467,11 @@
   -->Find_Active_Global_Damage_Modifiers|[*S:character_id];PC_GDM_CRIT;1
   --Rfind|[*S:character_id];[&attack_name];repeating_attack;atkname
   --/Rdump|
+  --?"X[*R:ammo]" -eq "X"|NoAmmoNeededPC_Attack
+  --~ResourceUsed|string;before;|;[*R:ammo]
+  -->Lib5E_FindResource|[*S:character_id];[&ResourceUsed];Ammoname;Ammo
+  -->Lib5E_AmmoAvailable|Ammo;[&ResourceUsed]
+  --:NoAmmoNeededPC_Attack|
   --#title|[*R:atkname]
   --#leftsub|[*S:character_name]
   --&attack_crit|0
@@ -557,6 +562,9 @@
   --+The [*R:atkname] attack missed!|[br][br]
 
   --:ATTACK_DONE|
+  --?"X[&Ammo]" -eq "X"|noAmmoSpent
+  -->Lib5E_AmmoSpent|[*S:character_id];Ammo;[&ResourceUsed]
+  --:noAmmoSpent|
   --X|
 
   --:EXEC_PC_CANTRIP|
