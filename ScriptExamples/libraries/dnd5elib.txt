@@ -23,7 +23,6 @@
 
 
 --:Lib5E_FindResource|character_id;resourceName;resourceReturnNameStringVariable;ResourceReturnValueStringVariable
---C[%2%]|[*[%1%]:class_resource_name]:_Lib5E_IsResourceClass|[*[%1%]:other_resource_name]:_Lib5E_IsResourceOther
 --?"[%2%]" -eq "[*[%1%]:class_resource_name]"|_Lib5E_IsResourceClass
 --?"[%2%]" -eq "[*[%1%]:other_resource_name]"|_Lib5E_IsResourceOther
 --Rfirst|[%1%];repeating_resource
@@ -32,12 +31,12 @@
 --?"[*R:resource_right_name]" -eq "[%2%]"|_Lib5E_IsResourceRight
 --Rnext|
 --?"[*R:resource_left_name]" -ne "NoRepeatingAttributeLoaded"|_Lib5E_ResourceLoop
---&[%3%]|NotFound --&[%4%]|NotFound --$[%4%]|0 
+--&[%3%]|NotFound --*IsNotFound| --&[%4%]|NotFound --=[%4%]|0 
 --<|
---:_Lib5E_IsResourceClass| --&[%3%]|class_resource_name --&[%4%]|class_resource --=[%4%]|[*[%1%]:class_resource] --<|
---:_Lib5E_IsResourceOther| --&[%3%]|other_resource_name --&[%4%]|other_resource --=[%4%]|[*[%1%]:other_resource] --<|
---:_Lib5E_IsResourceLeft| --&[%3%]|[*R>resource_left_name] --&[%4%]|[*R>resource_left] --=[%4%]|[*R:resource_left] --<|
---:_Lib5E_IsResourceRight| --&[%3%]|[*R>resource_right_name] --&[%4%]|[*R>resource_right] --=[%4%]|[*R:resource_right] --<|
+--:_Lib5E_IsResourceClass| --*IsClass| --&[%3%]|class_resource_name --&[%4%]|class_resource --=[%4%]|[*[%1%]:class_resource] --<|
+--:_Lib5E_IsResourceOther| --*IsOther!| --&[%3%]|other_resource --&[%4%]|other_resource --=[%4%]|[*[%1%]:other_resource] --<|
+--:_Lib5E_IsResourceLeft| --*IsLeft| --&[%3%]|[*R:resource_left_name]  --&[%4%]|[*R>resource_left]  --=[%4%]|[*S:[*R>resource_left]]    --<|  
+--:_Lib5E_IsResourceRight| --*IsRight| --&[%3%]|[*R:resource_left_name] --&[%4%]|[*R>resource_right] --=[%4%]|[*S:[*R>resource_right]] --<|
 --<|
 
 
@@ -153,3 +152,14 @@
 
 --:Lib5E_Character_Summary|character_id
 --?"[*[%1%]:npc]" -eq "0"|>Lib5E_PC_Summary;[%1%]|>Lib5E_NPC_Summary;[%1%] --<|
+
+--:Lib5E_AmmoAvailable|Variable Name;Ammo Name
+--?[$[%1%]] -le 0|>Lib5E_NoAmmoLeft;[%2%]
+--=[%1%]|[$[%1%]] - 1
+--<|
+
+--:Lib5E_NoAmmoLeft|Resource Used
+--#whisper|
+--+|[*S:character_name] has no [%1%] left.
+--#emoteText|[*S:character_name] is all out of [%1%].
+--X|NoSlotsLeftStop
